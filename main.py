@@ -1,7 +1,7 @@
 # Imports
 from tkinter import*
 from tkinter.messagebox import*
-#Test
+
 # Functions
 def newObject(id = None):
 
@@ -133,25 +133,18 @@ def editSettings():
     fen = Toplevel()
     fen.title("Edit settings")
 
-    entryVariables = [StringVar(), StringVar(), StringVar(), StringVar()]
-    entryVariables[0].set(global_settings["x_size"])
-    entryVariables[1].set(global_settings["y_size"])
-    entryVariables[2].set(global_settings["totalTime"])
-    entryVariables[3].set(global_settings["timeStep"])
+    entryVariables = [StringVar(), StringVar()]
+    entryVariables[0].set(global_settings["totalTime"])
+    entryVariables[1].set(global_settings["timeStep"])
 
-    Label(fen, text = "X size of box: ").grid(column = 0, row = 0, padx = 10, pady = 10, sticky = NW)
+    Label(fen, text = "Total duration: ").grid(column = 0, row = 0, padx = 10, pady = 10, sticky = NW)
     Entry(fen, textvariable = entryVariables[0], width = 20).grid(column = 1, row = 0, padx = 10, pady = 10, sticky = NW)
 
-    Label(fen, text = "Y size of box: ").grid(column = 0, row = 1, padx = 10, pady = 10, sticky = NW)
+    Label(fen, text = "Timestep: ").grid(column = 0, row = 1, padx = 10, pady = 10, sticky = NW)
     Entry(fen, textvariable = entryVariables[1], width = 20).grid(column = 1, row = 1, padx = 10, pady = 10, sticky = NW)
 
-    Label(fen, text = "Total duration: ").grid(column = 0, row = 2, padx = 10, pady = 10, sticky = NW)
-    Entry(fen, textvariable = entryVariables[2], width = 20).grid(column = 1, row = 2, padx = 10, pady = 10, sticky = NW)
-
-    Label(fen, text = "Timestep: ").grid(column = 0, row = 3, padx = 10, pady = 10, sticky = NW)
-    Entry(fen, textvariable = entryVariables[3], width = 20).grid(column = 1, row = 3, padx = 10, pady = 10, sticky = NW)
-
-    Button(fen, text = "Confirm values", command = confirm, width = 35).grid(column = 0, row = 4, padx = 10, pady = 10, columnspan = 2)
+    Button(fen, text = "Edit border values", command = None, width = 35).grid(column = 0, row = 2, padx = 10, pady = 10, columnspan = 2)
+    Button(fen, text = "Confirm values", command = confirm, width = 35).grid(column = 0, row = 3, padx = 10, pady = 10, columnspan = 2)
 
     fen.mainloop()
 
@@ -161,7 +154,7 @@ def finish_setup():
         showerror("Error","You have to set at least 2 objects with valid data.")
         return
     
-    if global_settings["x_size"] == 0:
+    if global_settings["totalTime"] == 0:
         showerror("Error","You have to set the global settings before being able to generate a setup file.")
         return
 
@@ -187,7 +180,7 @@ def updateUI():
 
 # Global variables
 objects = []
-global_settings = {"x_size":0, "y_size":0, "totalTime":0, "timeStep":0}
+global_settings = {"totalTime":0, "timeStep":0}
 
 # GUI / Tkinter part
 window = Tk()
