@@ -200,13 +200,3 @@ updateUI()
 
 # GUI mainloop
 window.mainloop()
-
-
-    
-
-    
-
-
-
-
-
