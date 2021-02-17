@@ -3,6 +3,45 @@ from tkinter import*
 from tkinter.messagebox import*
 
 # Functions
+def editBorders():
+
+    def confirm():
+        pass
+    
+    def show_line(id):
+        try:
+            if allLinesGUI[id] is not None:
+                can.delete(allLinesGUI[id])
+            allLinesGUI[id] = can.create_line(allBorderEntries[id][0].get(),allBorderEntries[id][1].get(),allBorderEntries[id][2].get(),allBorderEntries[id][3].get())
+        except:
+            showerror("Error","Complete all the fields before being able to show the line.")
+        
+    def new_fields():
+        allBorderEntries.append([StringVar(),StringVar(),StringVar(),StringVar()])
+        allLinesGUI.append(None)
+        Entry(fen, width = 10, textvariable = allBorderEntries[len(allBorderEntries)-1][0]).grid(column = 1, row = 3+len(allBorderEntries), padx = 10, pady = 10)
+        Entry(fen, width = 10, textvariable = allBorderEntries[len(allBorderEntries)-1][1]).grid(column = 2, row = 3+len(allBorderEntries), padx = 10, pady = 10)
+        Entry(fen, width = 10, textvariable = allBorderEntries[len(allBorderEntries)-1][2]).grid(column = 3, row = 3+len(allBorderEntries), padx = 10, pady = 10)
+        Entry(fen, width = 10, textvariable = allBorderEntries[len(allBorderEntries)-1][3]).grid(column = 4, row = 3+len(allBorderEntries), padx = 10, pady = 10)
+        Button(fen, text = "Show", command = lambda x = len(allBorderEntries)-1 : show_line(x), width = 10).grid(column = 5, row = 3+len(allBorderEntries), padx = 10, pady = 10)
+        
+    fen = Toplevel()
+    fen.state('zoomed')
+    fen.title("Border settings")
+
+    can = Canvas(fen, width = 1000, height = 1000, bg = "white")
+    can.grid(column = 0, row = 0, rowspan = 50, padx = 10, pady = 10)
+
+    Button(fen, text = "New Border", width = 40, command = new_fields).grid(column = 1, row = 0, columnspan = 5, padx = 10, pady = 10)
+    Button(fen, text = "Confirm borders", width = 40, command = None).grid(column = 1, row = 1, columnspan = 5, padx = 10, pady = 10)
+
+    Label(fen, text = "X1").grid(column = 1, row = 2, padx = 10, pady = 10)
+    Label(fen, text = "Y1").grid(column = 2, row = 2, padx = 10, pady = 10)
+    Label(fen, text = "X2").grid(column = 3, row = 2, padx = 10, pady = 10)
+    Label(fen, text = "Y2").grid(column = 4, row = 2, padx = 10, pady = 10)
+
+    fen.mainloop()
+
 def newObject(id = None):
 
     def confirm():
@@ -101,15 +140,11 @@ def editSettings():
         else:
 
             try:
-                xIsInt = float(entryVariables[0].get())==int(entryVariables[0].get())
-                yIsInt = float(entryVariables[1].get())==int(entryVariables[1].get())
-                totalTimeValid = float(entryVariables[2].get().replace(",",".")) > float(entryVariables[3].get().replace(",","."))
-                timeStepValid = float(entryVariables[3].get().replace(",",".")) <= 1 and float(entryVariables[3].get().replace(",",".")) >= 0.02
 
-                if not (xIsInt and yIsInt):
-                    showerror("Error","Size of box (x and y) have to be integers.")
-                    return
-                elif not totalTimeValid:
+                totalTimeValid = float(entryVariables[0].get().replace(",",".")) > float(entryVariables[1].get().replace(",","."))
+                timeStepValid = float(entryVariables[1].get().replace(",",".")) <= 1 and float(entryVariables[1].get().replace(",",".")) >= 0.02
+
+                if not totalTimeValid:
                     showerror("Error","Total simulation time has to be bigger than timestep.")
                     return
                 elif not timeStepValid:
@@ -118,17 +153,15 @@ def editSettings():
                 else:
                     showinfo("Sucess","All parameters valid.")
 
-                    global_settings["x_size"] = int(entryVariables[0].get())
-                    global_settings["y_size"] = int(entryVariables[1].get())
-                    global_settings["totalTime"] = float(entryVariables[2].get().replace(",","."))
-                    global_settings["timeStep"] = float(entryVariables[3].get().replace(",","."))
+
+                    global_settings["totalTime"] = float(entryVariables[0].get().replace(",","."))
+                    global_settings["timeStep"] = float(entryVariables[1].get().replace(",","."))
 
                     fen.destroy()
                     
             except:
                 showerror("Error","Size of box (x and y) have to be integers.")
                 return
-
 
     fen = Toplevel()
     fen.title("Edit settings")
@@ -143,15 +176,18 @@ def editSettings():
     Label(fen, text = "Timestep: ").grid(column = 0, row = 1, padx = 10, pady = 10, sticky = NW)
     Entry(fen, textvariable = entryVariables[1], width = 20).grid(column = 1, row = 1, padx = 10, pady = 10, sticky = NW)
 
-    Button(fen, text = "Edit border values", command = None, width = 35).grid(column = 0, row = 2, padx = 10, pady = 10, columnspan = 2)
-    Button(fen, text = "Confirm values", command = confirm, width = 35).grid(column = 0, row = 3, padx = 10, pady = 10, columnspan = 2)
+    Button(fen, text = "Confirm values", command = confirm, width = 35).grid(column = 0, row = 2, padx = 10, pady = 10, columnspan = 2)
 
     fen.mainloop()
 
 def finish_setup():
 
-    if not len(objects) > 2:
+    if not len(objects) >= 2:
         showerror("Error","You have to set at least 2 objects with valid data.")
+        return
+
+    if len(borders) == 0:
+        showerror("Error","You have not defined the borders.")
         return
     
     if global_settings["totalTime"] == 0:
@@ -174,13 +210,18 @@ def updateUI():
 
     Button(mainFrame, text = "New Object", command = newObject, width = 50, height = 2).grid(column = 0, row = len(objects), padx = 10, pady = 10)
 
-    Button(mainFrame, text = "Edit global settings", command = editSettings, width = 50, height = 2).grid(column = 0, row = len(objects)+1, padx = 10, pady = 10)
+    Button(mainFrame, text = "Edit time settings", command = editSettings, width = 50, height = 2).grid(column = 0, row = len(objects)+1, padx = 10, pady = 10)
 
-    Button(mainFrame, text = "Generate setting file", command = finish_setup, width = 50, height = 2).grid(column = 0, row = len(objects)+2, padx = 10, pady = 10)
+    Button(mainFrame, text = "Edit border settings", command = editBorders, width = 50, height = 2).grid(column = 0, row = len(objects)+2, padx = 10, pady = 10)
+
+    Button(mainFrame, text = "Generate setting file", command = finish_setup, width = 50, height = 2).grid(column = 0, row = len(objects)+3, padx = 10, pady = 10)
 
 # Global variables
 objects = []
 global_settings = {"totalTime":0, "timeStep":0}
+borders = []
+allBorderEntries = []
+allLinesGUI = []
 
 # GUI / Tkinter part
 window = Tk()
