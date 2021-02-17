@@ -211,6 +211,13 @@ def finish_setup():
         showerror("Error","You have to set the global settings before being able to generate a setup file.")
         return
 
+    with open("data.setup","w") as f:
+        f.write(str(global_settings["totalTime"])+","+str(global_settings["timeStep"])+"\n")
+        for loop in borders:
+            f.write("B,"+str(loop[0])+","+str(loop[1])+","+str(loop[2])+","+str(loop[3])+"\n")
+        for loop in objects:
+            f.write("O,"+str(loop["m"])+","+str(loop["v"])+","+str(loop["xp"])+","+str(loop["yp"])+","+str(loop["xv"])+","+str(loop["yv"])+","+str(loop["xa"])+","+str(loop["ya"])+","+str(loop["b"])+"\n")
+
     showinfo("Sucess","Setup file generation sucessful.")
     # Generate .setup file
 
