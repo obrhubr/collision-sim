@@ -6,8 +6,24 @@ from tkinter.messagebox import*
 def editBorders():
 
     def confirm():
-        pass
-    
+        global borders
+
+        for loop in allBorderEntries:
+            borders.append([loop[0].get(),loop[1].get(),loop[2].get(),loop[3].get()])
+
+        for loop in borders:
+            if "" in loop:
+                showerror("Error","All fields have to be filled in.")
+                borders = []
+                return
+
+        updateUI()
+        fen.destroy()
+
+    def on_closing():
+        updateUI()
+        fen.destroy()
+
     def show_line(id):
         try:
             if allLinesGUI[id] is not None:
@@ -28,12 +44,13 @@ def editBorders():
     fen = Toplevel()
     fen.state('zoomed')
     fen.title("Border settings")
+    fen.protocol("WM_DELETE_WINDOW", on_closing)
 
     can = Canvas(fen, width = 1000, height = 1000, bg = "white")
     can.grid(column = 0, row = 0, rowspan = 50, padx = 10, pady = 10)
 
-    Button(fen, text = "New Border", width = 40, command = new_fields).grid(column = 1, row = 0, columnspan = 5, padx = 10, pady = 10)
-    Button(fen, text = "Confirm borders", width = 40, command = None).grid(column = 1, row = 1, columnspan = 5, padx = 10, pady = 10)
+    Button(fen, text = "New Border", width = 60, command = new_fields).grid(column = 1, row = 0, columnspan = 5, padx = 10, pady = 10)
+    Button(fen, text = "Confirm borders", width = 60, command = confirm).grid(column = 1, row = 1, columnspan = 5, padx = 10, pady = 10)
 
     Label(fen, text = "X1").grid(column = 1, row = 2, padx = 10, pady = 10)
     Label(fen, text = "Y1").grid(column = 2, row = 2, padx = 10, pady = 10)
@@ -129,7 +146,7 @@ def editSettings():
         allNumbers = True
         for loop in entryVariables:
             try:
-                print(float(loop.get().replace(",",".")))
+                float(loop.get().replace(",","."))
             except:
                 allNumbers = False
         
@@ -199,9 +216,12 @@ def finish_setup():
 
 
 def updateUI():
-    global objects
+    global objects, allLinesGUI, allBorderEntries, borders
     for child in mainFrame.winfo_children():
         child.destroy() 
+
+    allLinesGUI = []
+    allBorderEntries = []
 
     if len(objects) > 0:
         for loop in range(len(objects)):
