@@ -212,7 +212,7 @@ def finish_setup():
         return
 
     with open("data.setup","w") as f:
-        f.write(str(global_settings["totalTime"])+","+str(global_settings["timeStep"])+"\n")
+        f.write(str(global_settings["totalTime"])+","+str(global_settings["timeStep"])+","+str(len(objects))+"\n")
         for loop in borders:
             f.write("B,"+str(loop[0])+","+str(loop[1])+","+str(loop[2])+","+str(loop[3])+"\n")
         for loop in objects:
