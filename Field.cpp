@@ -2,8 +2,8 @@
 #include <vector>
 #include <string>
 
-void Field::Field::setPos(float x1, float x2, float y1, float y2) {
-    x1 = x1; x2 = x2; y1 = y1; y2 = y2;
+void Field::Field::setPos(float nx1, float nx2, float ny1, float ny2) {
+    x1 = nx1; x2 = nx2; y1 = ny1; y2 = ny2;
 };
 
 std::vector<float> Field::Field::getPos() {

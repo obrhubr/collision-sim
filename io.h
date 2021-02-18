@@ -12,6 +12,10 @@ namespace io {
 
 	std::vector<Field::Field> readBoundaries();
 
+	float readSigma();
+
+	int readTotalTime();
+
 	std::string convert(Physics::Physics);
 
 	void write(std::string);

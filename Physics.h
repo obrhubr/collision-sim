@@ -14,6 +14,7 @@ namespace Physics {
         std::vector<Field::Field> getBoundaries();
         void update(float);
         void collisionCheck();
-        void bounce(int, int);
+        void bounceBall(int, int);
+        void bounceWall(int, int);
     };
 };
