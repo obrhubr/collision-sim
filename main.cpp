@@ -16,21 +16,20 @@ Physics::Physics setup(std::vector<Objects::Object> objectlist, std::vector<Fiel
 
 std::string runSimulation(int max, float dt, Physics::Physics physics) {
     int i = 0;
+    std::string content;
     while (i < max) {
         physics.update(dt);
+        content.append(io::convert(physics));
         i++;
     };
-
-    return io::convert(physics);
+    return content;
 };
 
 int main() {
     Physics::Physics physics = setup(io::readObjects(), io::readBoundaries());
     std::string content;
 
-    content.append(runSimulation(5, 0.1, physics));
-
-    io::write(content);
+    io::write(runSimulation(io::readTotalTime(), io::readSigma(), physics));
     
     return 1;
 }
