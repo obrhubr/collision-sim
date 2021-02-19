@@ -6,13 +6,23 @@ def draw_borders():
         canvas.create_line(int(loop[0]),int(loop[1]),int(loop[2]),int(loop[3]))
 
 def update_UI():
-    global currentID
-    print(currentID)
-    currentID += 1
+    global currentID, mouvementData, objectsUI
+    
+
     if currentID < totalTime:
+        for loop in range(objectNb):
+
+            canvas.delete(objectsUI[loop])
+
+            objectsUI[loop]=canvas.create_oval(
+                                                int(float(mouvementData[currentID][0+2*loop]))-int(float(objectData[loop][0])),
+                                                int(float(mouvementData[currentID][1+2*loop]))-int(float(objectData[loop][0])),
+                                                int(float(mouvementData[currentID][0+2*loop]))+int(float(objectData[loop][0])),
+                                                int(float(mouvementData[currentID][1+2*loop]))+int(float(objectData[loop][0]))
+                                                )
+            
+        currentID += 1
         window.after(int(timeStep*1000), update_UI)
-    else:
-        window.destroy()
 
 window = Tk()
 window.title("Animation")
@@ -45,7 +55,7 @@ with open(setup_file,"r") as f:
     objectRawData.append(line)
 
     for loop in range(objectNb-1):
-        objectRawData.append(line)
+        objectRawData.append(f.readline())
 
     for element in objectRawData:
         objectData.append(element.strip().split(",")[2:5])
@@ -60,8 +70,11 @@ canvas.grid(column = 0, row = 0, padx = 10, pady = 10)
 
 draw_borders()
 
-for loop in range(objectNb):
-    objectsUI.append(canvas.create_oval)
+print(objectData)
+for loop in objectData:
+    objectsUI.append(canvas.create_oval(int(float(loop[1]))-int(float(loop[0])),int(float(loop[2]))-int(float(loop[0])),int(float(loop[1]))+int(float(loop[0])),int(float(loop[2]))+int(float(loop[0]))))
+
+
 window.after(int(timeStep*1000), update_UI)
 
 window.mainloop()
