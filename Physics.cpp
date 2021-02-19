@@ -3,6 +3,7 @@
 #include "Physics.h"
 #include <vector>
 #include <string>
+#include <math.h>
 
 void Physics::Physics::objects(std::vector<Objects::Object> objects) {
     objectlist = objects;
@@ -21,13 +22,13 @@ std::vector<Field::Field> Physics::Physics::getBoundaries() {
 };
 
 void Physics::Physics::update(float dt) {
-    //Check for collision
-    collisionCheck();
     //Update positions according to new velocity and acceleration
     for (int i = 0; i < objectlist.size(); i++) {
         objectlist[i].updatePos(objectlist[i].getPos()[0] + (objectlist[i].getDeriv()[0] * dt), objectlist[i].getPos()[1] + (objectlist[i].getDeriv()[1] * dt));
         objectlist[i].updateDeriv(objectlist[i].getDeriv()[0] + (objectlist[i].getDeriv()[2] * dt), objectlist[i].getDeriv()[1] + (objectlist[i].getDeriv()[3] * dt), objectlist[i].getDeriv()[2], objectlist[i].getDeriv()[3]);
     };
+    //Check for collision
+    collisionCheck();
 };
 
 void Physics::Physics::collisionCheck() {
@@ -37,17 +38,27 @@ void Physics::Physics::collisionCheck() {
     for (int i = 0; i < objectlist.size(); i++) {
         for (int j = 0; j < objectlist.size(); j++) {
             if (i != j) {
-                float r = objectlist[i].getStat()[1] + objectlist[j].getStat()[1];
-                r *= r;
-                float a = objectlist[i].getPos()[0] + objectlist[j].getPos()[0];
-                float b = objectlist[i].getPos()[1] + objectlist[j].getPos()[1];
-                float dist = a * a + b * b;
-                if (r - dist <= 0) {
+                if (fabs((objectlist[i].getPos()[0] - objectlist[j].getPos()[0]) * (objectlist[i].getPos()[0] - objectlist[j].getPos()[0]) + (objectlist[i].getPos()[1] - objectlist[j].getPos()[1]) * (objectlist[i].getPos()[1] - objectlist[j].getPos()[1])) <= (objectlist[i].getStat()[1] + objectlist[j].getStat()[1]) * (objectlist[i].getStat()[1] + objectlist[j].getStat()[1])) {
+                    displaceBalls(i, j);
                     bounceBall(i, j);
                 };
             };
         };
     };
+};
+
+void Physics::Physics::displaceBalls(int i, int j) {
+    // Distance between ball centers
+    float fDistance = sqrtf((objectlist[i].getPos()[0] - objectlist[j].getPos()[0]) * (objectlist[i].getPos()[0] - objectlist[j].getPos()[0]) + (objectlist[i].getPos()[1] - objectlist[j].getPos()[1]) * (objectlist[i].getPos()[1] - objectlist[j].getPos()[1]));
+
+    // Calculate displacement required
+    float fOverlap = 0.5f * (fDistance - objectlist[i].getStat()[1] - objectlist[j].getStat()[1]);
+
+    // Displace Current Ball away from collision
+    objectlist[i].updatePos(objectlist[i].getPos()[0] - fOverlap * (objectlist[i].getPos()[0] - objectlist[j].getPos()[0]) / fDistance, objectlist[i].getPos()[1] - fOverlap * (objectlist[i].getPos()[1] - objectlist[j].getPos()[1]) / fDistance);
+
+    // Displace Target Ball away from collision
+    objectlist[j].updatePos(objectlist[j].getPos()[0] - fOverlap * (objectlist[j].getPos()[0] - objectlist[i].getPos()[0]) / fDistance, objectlist[j].getPos()[1] - fOverlap * (objectlist[j].getPos()[1] - objectlist[i].getPos()[1]) / fDistance);
 };
 
 void Physics::Physics::bounceBall(int i, int j) {
@@ -78,7 +89,7 @@ void Physics::Physics::bounceBall(int i, int j) {
 
     //Update velocity of ball
     objectlist[i].updateDeriv(tx * dpTan1 + nx * m1, ty * dpTan1 + ny * m1, objectlist[i].getDeriv()[2], objectlist[i].getDeriv()[3]);
-    objectlist[j].updateDeriv(tx * dpTan2 + nx * m1, ty * dpTan2 + ny * m1, objectlist[j].getDeriv()[2], objectlist[j].getDeriv()[3]);
+    objectlist[j].updateDeriv(tx * dpTan2 + nx * m2, ty * dpTan2 + ny * m2, objectlist[j].getDeriv()[2], objectlist[j].getDeriv()[3]);
 };
 
 void Physics::Physics::bounceWall(int i, int j) {
