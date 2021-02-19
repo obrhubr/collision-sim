@@ -15,7 +15,7 @@ std::vector<Objects::Object> io::readObjects() {
     std::ifstream infile("data.setup");
     for (std::string line; getline(infile, line); ) {
         if (line.at(0) == 'B') {
-            
+
         }
         else if (line.at(0) == 'O') {
             std::stringstream ss(line);
@@ -67,42 +67,40 @@ std::vector<Field::Field> io::readBoundaries() {
     return boundaries;
 };
 
-float io::readSigma() {
-    //std::ifstream infile("data.setup");
-    //int counter = 0;
-    //for (std::string line; getline(infile, line); ) {
-    //    if (counter == 0) {
-    //        std::stringstream ss(line);
-    //        while (ss.good()) {
-    //            std::string substr;
-    //            std::getline(ss, substr, ','); //get first string delimited by comma
-    //            return std::stof(substr);
-    //        };
-    //    };
-    //    counter++;
-    //};
-    return 0.1;
+int io::readTotalTime() {
+    std::ifstream infile("data.setup");
+    int counter = 0;
+    for (std::string line; getline(infile, line); ) {
+        if (counter == 0) {
+            std::stringstream ss(line);
+            while (ss.good()) {
+                std::string substr;
+                std::getline(ss, substr, ','); //get first string delimited by comma
+                return std::stoi(substr);
+            };
+        };
+         counter++;
+    };
 };
 
-int io::readTotalTime() {
-    //std::ifstream infile("data.setup");
-    //int counter = 0;
-    //for (std::string line; getline(infile, line); ) {
-    //    if (counter == 0) {
-    //        std::stringstream ss(line);
-    //        int counter2 = 0;
-    //        while (ss.good()) {
-    //            std::string substr;
-    //            std::getline(ss, substr, ','); //get first string delimited by comma
-    //            if (counter == 1) {
-    //                return std::stoi(substr);
-    //            };
-    //            counter++;
-    //        };
-    //    };
-    //    counter++;
-    //};
-    return 100;
+float io::readSigma() {
+    std::ifstream infile("data.setup");
+    int counter = 0;
+    for (std::string line; getline(infile, line); ) {
+        if (counter == 0) {
+            std::stringstream ss(line);
+            int counter2 = 0;
+            while (ss.good()) {
+                std::string substr;
+                std::getline(ss, substr, ','); //get first string delimited by comma
+                if (counter == 1) {
+                    return std::stof(substr);
+                };
+                counter++;
+            };
+        };
+        counter++;
+    };
 };
 
 std::string io::convert(Physics::Physics physics) {
@@ -119,7 +117,6 @@ std::string io::convert(Physics::Physics physics) {
 };
 
 void io::write(std::string content) {
-    std::cout << content;
     std::ofstream myfile;
     myfile.open("output.data");
     myfile << content;

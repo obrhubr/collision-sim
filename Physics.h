@@ -6,6 +6,7 @@
 namespace Physics {
     class Physics {
         std::vector<Objects::Object> objectlist;
+        std::vector<Objects::Object> fakeObjectlist;
         std::vector<Field::Field> boundarylist;
     public:
         void objects(std::vector<Objects::Object>);
@@ -14,8 +15,7 @@ namespace Physics {
         std::vector<Field::Field> getBoundaries();
         void update(float);
         void collisionCheck();
-        void displaceBalls(int, int);
-        void bounceBall(int, int);
-        void bounceWall(int, int);
+        void displaceBalls(Objects::Object*, Objects::Object*);
+        void bounceBall(Objects::Object *, Objects::Object* );
     };
 };
