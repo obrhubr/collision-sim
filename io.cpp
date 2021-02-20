@@ -79,8 +79,9 @@ int io::readTotalTime() {
                 return std::stoi(substr);
             };
         };
-         counter++;
+        counter++;
     };
+    return 10000;
 };
 
 float io::readSigma() {
@@ -101,6 +102,7 @@ float io::readSigma() {
         };
         counter++;
     };
+    return 0.1f;
 };
 
 std::string io::convert(Physics::Physics physics) {
