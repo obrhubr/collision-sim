@@ -1,6 +1,7 @@
 tempCodeRunnerFile.py
-data.setup
 output.data
 .vscode
 *.gch
 *.exe
+bin
+build
